@@ -1,0 +1,44 @@
+---
+title: "Analise dos CRAS"
+author: "Ricardo Lovatel"
+date: "19 de outubro de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Capa (slide inicial com título e nome)
+
+- Objeto (tema central da apresentação)
+
+- Objetivos (questões de pesquisa que o trabalho irá responder)
+
+- Contexto (justificativa)
+
+- Método (como foram coletados, tratados e organizados os dados)
+
+- Gráficos/tabelas (2 slides, pelo menos)
+
+- Conclusões
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
