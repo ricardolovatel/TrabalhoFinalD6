@@ -1,5 +1,5 @@
 ---
-title: "Analise dos CRAS"
+title: "Análise do Censo SUAS - CRAS"
 author: "Ricardo Lovatel"
 date: "19 de outubro de 2018"
 output: ioslides_presentation
@@ -7,13 +7,95 @@ output: ioslides_presentation
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+
 ```
 
-## R Markdown
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+```{r,eval=T,include=F}
+
+
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(ggplot2)
+library(readxl)
+
+```
+
+
+
+## Objeto (tema central da apresentação)
+
+O Censo SUAS é uma pesquisa realizada todos os anos para coletar informações a respeito da situação dos equipamentos de Assistência Social no Brasil. Entre os equipamentos encontram-se os Centros de Referência de Assistência Social, os CRAS. 
+
+
+## Objetivos 
+
+O objetivo deste trabalho é analisar dois grupos de respostas sobre a situação dos CRAS no ano de 2017, sendo o primeiro grupo a situação do imóvel do CRAS com relação à propriedade deste  e a segunda é sobre o uso compartilhado das instalações do CRAS com outra unidade de atentimento
+
+
+A primeira pergunta é sobre a situação do imóvel onde se localiza o CRAS. A quantidade de imóveis próprios, o que é bom, é significativa?
+
+A segunda pergunta é sobre o compartilhamento de espaços entre o CRAS e outra unidade administrativa. Os CRAS compartilham, o que é ruim, seu espaço com outras unidades de atendimento? 
+
+
+```{r dicionario, echo = FALSE}
+dicionario <- data.frame (variavel = c("q2","q3.1","q3.2","q4", "q5","q7.1","q7.2","q7.3","q7.4","q7.5","q7.6","q7.7","q7.8","q7.9","q7.10","q7.11","q7.12"),
+                          nome = c("Este CRAS é uma unidade com capacidade para até:",
+                                   "Horário de Funcionamento_Dias por Semana",  
+                                   "Horário de Funcionamento_Horas por dia",
+                                   "Situação do imóvel onde se localiza o CRAS",
+                                   "O imóvel de funcionamento deste CRAS é compartilhado",
+                                   "CRAS são independentes e de uso exclusivo",
+                                   "Entrada / Porta de Acesso",
+                                   "Recepção",
+                                   "Cozinha",
+                                   "Algumas salas de atendimento particularizado",
+                                   "Todas as salas de atendimento particularizado",
+                                   "Algumas salas de atendimento coletivo", 
+	                                 "Todas as salas de atendimento coletivo",
+                                   "Salas administrativas",
+                                   "Banheiros",
+  	                               "Área Externa",
+                                   "Almoxarifado ou similar"))
+censocras2017 <- read_excel("D:/GitHub/ENAP/CRAS_2017.xlsx",sheet = 1)
+```
+
+
+## Contexto (justificativa)
+
+A política de Assistência Social é realizada de forma triparticípe, sendo importante o reconhecimento da população da existência do espaço do CRAS. Disto a importância de existir, se possível,  a independencia do CRAS das demais estruturas administrativas. 
+
+
+
+## - Método (como foram coletados, tratados e organizados os dados)
+
+O arquivo que foi usado foi recuperado do link “https://aplicacoes.mds.gov.br/snas/vigilancia/index2.php”, mantido pelo MDS. Este arquivo tem as respostas no ano de 2017 dos 8.292 CRAS que responderam a pesquisa, na primeira aba. Na segunda aba tem um dicionário de variáveis usadas para criar o data frame dicionario.
+
+A primeira análise será a situação do imóveis, na qual próprio é a situação mais desejada
+
+A próxima análise será o compartilhamento de espaços, nos casos que o imóvel não seja próprio.
+
+## Situação do imóvel onde se localiza o CRAS 
+
+```{r arquivo , echo = FALSE}
+
+situacao <- censocras2017 %>%
+  select(q4)
+sit <- situacao %>%
+  group_by(q4) 
+
+```
+
+
+```{r q4}
+ggplot(situacao, aes(x = as.factor(q4),fill = as.factor(q4))) + 
+  geom_bar() +
+  xlab("Situação do imóvel onde se localiza o CRAS") +
+  ylab("Quantidade")+ 
+  labs(fill = "Situação")
+```
 
 ## Slide with Bullets
 
@@ -30,15 +112,57 @@ When you click the **Knit** button a document will be generated that includes bo
 - Gráficos/tabelas (2 slides, pelo menos)
 
 - Conclusões
-## Slide with R Output
 
-```{r cars, echo = TRUE}
-summary(cars)
+
+## Compartilhada espaços
+
+```{r compartilhado, echo = FALSE}
+
+compartilhado  <-  censocras2017 %>%
+  select (q5)
+##comp <- compartilhado %>%
+##  group_by(q5)
+
+ggplot(compartilhado, aes(x = as.factor(q5),fill = as.factor(q5))) + 
+  geom_bar() +
+  xlab("Espaço do CRAS compartilhado") +
+  ylab("Quantidade") + 
+  labs(fill = "Compartilhado")
+
+```
+
+
+## Espaços compartilhados
+
+
+
+```{r espacos, echo = FALSE}
+
+espacos <-  censocras2017 %>%
+  select (q7.1,q7.2,q7.3,q7.4,q7.5,q7.6,q7.7,q7.8,q7.9,q7.10,q7.11,q7.12)
+
+espacos <- espacos %>% 
+  group_by(q7.1,q7.2,q7.3,q7.4,q7.5,q7.6,q7.7,q7.8,q7.9,q7.10,q7.11,q7.12)
+
+q71 <-  espacos %>% 
+  count (q7.1)
+
+q71
+
+#ggplot(espacos) + 
+#  geom_bar()
+#espacos
+
+#summary(espacos)
 ```
 
 ## Slide with Plot
 
 ```{r pressure}
-plot(pressure)
+
 ```
+
+
+## - Conclusões
+
 

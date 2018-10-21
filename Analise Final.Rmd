@@ -1,0 +1,106 @@
+---
+title: "Análise do Censo SUAS - CRAS"
+author: "Ricardo Lovatel"
+date: "19 de outubro de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+
+
+```{r,eval=T,include=F}
+
+
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(ggplot2)
+library(readxl)
+
+```
+
+
+
+## Objeto 
+
+O Censo SUAS é uma pesquisa realizada todos os anos para coletar informações a respeito da situação dos equipamentos de Assistência Social no Brasil. Entre os equipamentos encontram-se os Centros de Referência de Assistência Social, os CRAS. 
+
+
+## Objetivos 
+
+O objetivo deste trabalho é analisar dois grupos de respostas sobre a situação dos CRAS no ano de 2017, sendo o primeiro grupo a situação do imóvel do CRAS com relação à propriedade deste  e a segunda é sobre o uso compartilhado das instalações do CRAS com outra unidade de atentimento
+
+
+A primeira pergunta é sobre a situação do imóvel onde se localiza o CRAS. A quantidade de imóveis próprios, o que é bom, é significativa?
+
+A segunda pergunta é sobre o compartilhamento de espaços entre o CRAS e outra unidade administrativa. Os CRAS compartilham, o que é ruim, seu espaço com outras unidades de atendimento? 
+
+
+```{r censocras, echo = FALSE}
+
+censocras2017 <- read_excel("D:/GitHub/ENAP/CRAS_2017.xlsx",sheet = 1)
+```
+
+
+## Contexto 
+
+A política de Assistência Social é realizada de forma triparticípe e é responsabilidade dos Estados e Municípios proverem os espaços para o funcionamento dos CRAS, com as verbas federais transferidas,  sendo importante o reconhecimento da população da existência do espaço do CRAS. Disto a importância de existir, se possível, a independencia do CRAS das demais estruturas administrativas. 
+
+
+
+## Método 
+
+O arquivo que foi usado é o resultado da pesquisa anual realizada pelo MDS, chamada de Censo SUAS e foi recuperado do link “https://aplicacoes.mds.gov.br/snas/vigilancia/index2.php”, mantido pelo MDS. Este arquivo tem as respostas no ano de 2017 dos 8.292 CRAS que responderam a pesquisa, na primeira aba. Na segunda aba tem um dicionário de variáveis usadas para criar o data frame dicionario.
+
+A primeira análise será a situação do imóveis, na qual próprio é a situação mais desejada
+
+A próxima análise será o compartilhamento de espaços dos CRAS.
+
+## Situação do imóvel onde se localiza o CRAS 
+
+```{r situacao , echo = FALSE}
+
+situacao <- censocras2017 %>%
+  select(q4)
+sit <- situacao %>%
+  group_by(q4) 
+
+```
+
+
+```{r q4}
+ggplot(situacao, aes(x = as.factor(q4),fill = as.factor(q4))) + 
+  geom_bar() +
+  xlab("Situação do imóvel onde se localiza o CRAS") +
+  ylab("Quantidade")+ 
+  labs(fill = "Situação")
+```
+
+
+## Compartilhada espaços?
+
+```{r compartilhado, echo = FALSE}
+
+compartilhado  <-  censocras2017 %>%
+  select (q5)
+##comp <- compartilhado %>%
+##  group_by(q5)
+
+ggplot(compartilhado, aes(x = as.factor(q5),fill = as.factor(q5))) + 
+  geom_bar() +
+  xlab("Espaço do CRAS compartilhado") +
+  ylab("Quantidade") + 
+  labs(fill = "Compartilhado")
+
+```
+
+
+## Conclusões
+
+A pequena quantidade de imóveis próprios pode ser uma fragilidade do sistema de Assistência Social, pois as situações de "Alugado" e "Cedido" são provisórias e podem ser alteradas.
+
+Por outro lado observamos uma grande quantidade de imóveis com espaço dedicado ao CRAS, o que é bom, dando um aspecto de atenção ao serviço prestado. 
